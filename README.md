@@ -49,4 +49,4 @@ Open a new terminal or run `exec fish` after setup.
   - Ctrl+Option+Shift = word/paragraph selection
 
 ---
-For details, see `setup.sh` and `devbox.json`.
+For details, see [setup.sh](setup.sh) and [devbox.json](devbox.json).
