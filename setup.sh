@@ -50,6 +50,24 @@ reload_quicklook() {
   fi
 }
 
+# iTerm2 profiles & preferences
+ITERM_SRC_DIR="$DOT/iterm2"
+
+# Dynamic Profiles
+if [ -f "$ITERM_SRC_DIR/DynamicProfiles/devbox-profiles.json" ]; then
+  TARGET_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+  mkdir -p "$TARGET_DIR"
+  link "$ITERM_SRC_DIR/DynamicProfiles/devbox-profiles.json" \
+       "$TARGET_DIR/devbox-profiles.json"
+  say "iTerm2 dynamic profiles linked."
+fi
+
+# Nudge iTerm2 to pick up changes if it’s installed
+if brew list --cask iterm2 >/dev/null 2>&1; then
+  # Launch once so the profile/prefs get registered; safe if already running
+  open -g -a iTerm || true
+fi
+
 say "Linking dotfiles"
 # fish & fzf
 link "$DOT/fish/config.fish"                  "$HOME/.config/fish/config.fish"
