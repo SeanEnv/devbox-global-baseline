@@ -1,0 +1,31 @@
+{
+  "packages": [
+    "fish@latest",
+    "starship@latest",
+    "ripgrep@latest",
+    "fd@latest",
+    "fzf@latest",
+    "zoxide@latest",
+    "lf@latest",
+    "neovim@latest",
+    "git@latest",
+    "gh@latest",
+    "bat@latest",
+    "eza@latest",
+    "jq@latest",
+    "yq@latest",
+    "htop@latest",
+    "neofetch@latest",
+    "direnv@latest",
+    "gum@latest",
+    "tree@latest",
+    "viu@latest",
+    "exiftool@latest",
+    "poppler@latest"
+  ],
+  "shell": {
+    "scripts": {
+      "setup": "bash ./setup.sh"
+    }
+  }
+}

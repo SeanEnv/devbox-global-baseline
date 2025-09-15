@@ -1,0 +1,80 @@
+set shell sh
+set scrolloff 5
+set hidden
+set smartcase
+set wrapscan
+set drawbox
+set icons
+set number
+set previewer ~/.config/lf/preview.sh
+set cleaner  ~/.config/lf/cleaner.sh
+
+# Vim-style nav
+map j down
+map k up
+map h updir
+map l open
+map gg top
+map G  bottom
+map H jump-prev
+map L jump-next
+map gh toggledir
+map g~ cd ~
+
+# File ops
+map dd cut
+map yy copy
+map pp paste
+map dD delete
+map D trash
+map u undo
+map U redo
+map r rename
+map mf :touch
+map md :mkdir
+
+# Marks
+map mm mark
+map '` goto
+
+# Searching
+map / search
+map n searchnext
+map N searchprev
+
+# File opening (macOS)
+map E $EDITOR $f
+map o open $f
+map z qlmanage -p $f >/dev/null 2>&1
+map P sh -c 'command -v mpv >/dev/null && mpv "$f" || open "$f"'
+
+# Misc
+map . togglehidden
+map a invert
+map s sortby name
+map S sortby time
+map t set drawbox!
+map q quit
+
+# Git
+cmd git-add %git add "$f"
+cmd git-reset %git reset "$f"
+cmd git-commit %git commit
+cmd git-diff %git diff "$f"
+cmd git-log %git log --oneline -- "$f"
+map ga :git-add
+map gr :git-reset
+map gc :git-commit
+map gd :git-diff
+map gl :git-log
+
+# FZF (select a file and highlight it in lf)
+cmd fzf-select %{
+    f=$(fzf)
+    [ -n "$f" ] && lf -remote "send $id select \"$f\""
+}
+map f :fzf-select
+
+# Archive extract (to .extract)
+cmd extract %mkdir -p "$f:h/.extract" && bsdtar -xf "$f" -C "$f:h/.extract"
+map xe :extract

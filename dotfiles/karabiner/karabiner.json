@@ -1,0 +1,61 @@
+{
+  "global": {
+    "ask_for_confirmation_before_quitting": true,
+    "check_for_updates_on_startup": true,
+    "show_in_menu_bar": true,
+    "show_profile_name_in_menu_bar": false
+  },
+  "profiles": [
+    {
+      "name": "Vim Navigation (Ctrl-hjkl)",
+      "selected": true,
+      "complex_modifications": {
+        "parameters": {
+          "basic.simultaneous_threshold_milliseconds": 50,
+          "basic.to_delayed_action_delay_milliseconds": 500,
+          "basic.to_if_alone_timeout_milliseconds": 500,
+          "basic.to_if_held_down_threshold_milliseconds": 50
+        },
+        "rules": [
+          {
+            "description": "Ctrl-h/j/k/l → Arrow keys",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control"] } }, "to": [{ "key_code": "left_arrow" }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control"] } }, "to": [{ "key_code": "down_arrow" }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control"] } }, "to": [{ "key_code": "up_arrow" }] },
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control"] } }, "to": [{ "key_code": "right_arrow" }] }
+            ]
+          },
+          {
+            "description": "Ctrl+Shift+h/j/k/l → Select while moving",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control","shift"] } }, "to": [{ "key_code": "left_arrow", "modifiers": ["shift"] }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control","shift"] } }, "to": [{ "key_code": "down_arrow", "modifiers": ["shift"] }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control","shift"] } }, "to": [{ "key_code": "up_arrow", "modifiers": ["shift"] }] },
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control","shift"] } }, "to": [{ "key_code": "right_arrow", "modifiers": ["shift"] }] }
+            ]
+          },
+          {
+            "description": "Ctrl+Option+h/l → Word left/right; Ctrl+Option+j/k → Paragraph up/down",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control","option"] } }, "to": [{ "key_code": "left_arrow", "modifiers": ["option"] }] },
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control","option"] } }, "to": [{ "key_code": "right_arrow", "modifiers": ["option"] }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control","option"] } }, "to": [{ "key_code": "down_arrow", "modifiers": ["option"] }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control","option"] } }, "to": [{ "key_code": "up_arrow", "modifiers": ["option"] }] }
+            ]
+          },
+          {
+            "description": "Ctrl+Option+Shift+h/l/j/k → Word/paragraph selection",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "left_arrow", "modifiers": ["option","shift"] }] },
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "right_arrow", "modifiers": ["option","shift"] }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "down_arrow", "modifiers": ["option","shift"] }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "up_arrow", "modifiers": ["option","shift"] }] }
+            ]
+          }
+        ]
+      },
+      "simple_modifications": []
+    }
+  ]
+}
