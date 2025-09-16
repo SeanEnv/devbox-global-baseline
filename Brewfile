@@ -1,3 +1,5 @@
+tap "pulumi/tap"
+
 # ---------- CLI formulae ----------
 brew "fish"
 brew "starship"
