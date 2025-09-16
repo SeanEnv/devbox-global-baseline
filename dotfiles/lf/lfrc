@@ -1,8 +1,9 @@
 ########################################
 # lf configuration (macOS-friendly)
-# Notes:
-# - `set shell sh` makes lf run external commands with /bin/sh, not your login shell.
 ########################################
+
+# Treat each selected filename as a separate argument for /bin/sh
+set ifs "\n"
 
 # Core
 set shell sh
@@ -40,12 +41,27 @@ map dd cut
 map yy copy
 map pp paste
 map dD delete
-map D  trash
 map u  undo
 map U  redo
 map r  rename
 map mf :touch           # Create a new file (lf internal)
 map md :mkdir           # Create a new directory (lf internal)
+
+# Use macOS' built-in trash when available, else fall back
+cmd trash %{
+    if [ -x /usr/bin/trash ]; then
+        # -s = stop on first error; drop it if you prefer "best effort"
+        /usr/bin/trash -s $fx
+    elif command -v trash >/dev/null 2>&1; then
+        # e.g. Homebrew/Python trash
+        trash $fx
+    else
+        # last-resort fallback
+        for p in "$@"; do mv "$p" ~/.Trash/; done
+    fi
+} $fx
+map D :trash
+
 
 ########################################
 # Search
