@@ -1,6 +1,3 @@
-# Taps
-tap "homebrew/cask"
-
 # ---------- CLI formulae ----------
 brew "fish"
 brew "starship"
@@ -30,10 +27,6 @@ cask "iterm2"
 cask "visual-studio-code"
 cask "jetbrains-toolbox"
 
-# Security
-brew "1password"
-brew "1password-cli"      # official 1Password CLI (formula)
-
 # Browsers
 cask "google-chrome"
 cask "firefox"
@@ -43,7 +36,6 @@ cask "microsoft-edge"
 cask "karabiner-elements"
 cask "the-unarchiver"
 cask "alt-tab"
-cask "ice"                # Ice (menu bar manager)
 
 # API/HTTP clients
 cask "postman"
@@ -57,7 +49,6 @@ cask "qlcolorcode"
 cask "qlstephen"
 cask "qlmarkdown"
 cask "quicklook-json"
-cask "qlimagesize"
 cask "suspicious-package"
 cask "apparency"
 cask "quicklookase"

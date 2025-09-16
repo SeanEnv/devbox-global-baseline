@@ -19,12 +19,12 @@ else
 end
 
 set -gx FZF_DEFAULT_OPTS_FILE ~/.config/fzf/fzf.conf
-set -gx FZF_CTRL_T_OPTS (string trim (cat ~/.config/fzf/ctrl-t.conf 2>/dev/null))
-set -gx FZF_ALT_C_OPTS  (string trim (cat ~/.config/fzf/alt-c.conf 2>/dev/null))
-set -gx FZF_CTRL_R_OPTS (string trim (cat ~/.config/fzf/history.conf 2>/dev/null))
+set -gx FZF_CTRL_T_OPTS (string trim -- (cat ~/.config/fzf/ctrl-t.conf 2>/dev/null))
+set -gx FZF_ALT_C_OPTS  (string trim -- (cat ~/.config/fzf/alt-c.conf 2>/dev/null))
+set -gx FZF_CTRL_R_OPTS (string trim -- (cat ~/.config/fzf/history.conf 2>/dev/null))
 
 # Official fzf Fish integration (adds CTRL-T / ALT-C / CTRL-R bindings)
-fzf --fish | source
+fzf --completion --key-bindings | source
 
 # zoxide (official)
 zoxide init fish | source
