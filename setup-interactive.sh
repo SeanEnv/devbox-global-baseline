@@ -38,16 +38,22 @@ if ! command -v gum >/dev/null 2>&1; then
 fi
 command -v gum >/dev/null 2>&1 && _have_gum=1
 
-# Install fisher
+# Install fisher (run inside fish)
 if ! command -v fisher >/dev/null 2>&1; then
-  say "Installing fisher..."
-  curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+  if command -v fish >/dev/null 2>&1; then
+    say "Installing fisher..."
+    fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher' || warn "Failed to install fisher"
+  else
+    warn "fish not found; skipping fisher install"
+  fi
 fi
 
-# Install nvm.fish
-if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
+# Install nvm.fish via fisher (use fish to run fisher)
+if command -v fisher >/dev/null 2>&1; then
   say "Installing nvm.fish..."
-  fisher install jorgebucaran/nvm.fish
+  fish -c 'fisher install jorgebucaran/nvm.fish' || warn "Failed to install nvm.fish"
+else
+  warn "fisher not available; skipping nvm.fish install"
 fi
 
 # helpers for brewfile installs

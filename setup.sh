@@ -79,14 +79,21 @@ fi
 
 # Install fisher
 if ! command -v fisher >/dev/null 2>&1; then
-    log "Installing fisher..."
-    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+  if command -v fish >/dev/null 2>&1; then
+    log "Installing fisher (via fish)..."
+    # Run the fisher install inside fish (curl | source only works in fish)
+    fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher' || warn "Failed to install fisher"
+  else
+    warn "fish not found; skipping fisher install"
+  fi
 fi
 
-# Install nvm.fish
-if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
-    log "Installing nvm.fish..."
-    fisher install jorgebucaran/nvm.fish
+# Install nvm.fish via fisher (use fish to run fisher)
+if command -v fisher >/dev/null 2>&1; then
+  log "Installing nvm.fish (via fish/fisher)..."
+  fish -c 'fisher install jorgebucaran/nvm.fish' || warn "Failed to install nvm.fish"
+else
+  warn "fisher not available; skipping nvm.fish install"
 fi
 
 # iTerm2 Dynamic Profiles
