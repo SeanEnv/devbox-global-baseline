@@ -1,7 +1,4 @@
-# Taps for formulae
-tap "homebrew/cask"
-
-# CLI formulae
+# ---------- CLI formulae ----------
 brew "fish"
 brew "starship"
 brew "ripgrep"
@@ -11,17 +8,17 @@ brew "zoxide"
 brew "lf"
 brew "neovim"
 brew "git"
-brew "gh"
+brew "gh"               # GitHub CLI
 brew "bat"
-brew "eza"
+brew "eza"              # modern ls
 brew "jq"
 brew "yq"
 brew "htop"
-brew "fastfetch"
+brew "fastfetch"        # modern neofetch alternative
 brew "direnv"
 brew "gum"
 brew "tree"
 brew "viu"
 brew "exiftool"
 brew "poppler"
-brew "1password-cli"
+brew "oven-sh/bun/bun"

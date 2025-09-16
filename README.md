@@ -25,6 +25,20 @@ This will:
 2. Clone this repository to `~/.global-baseline`
 3. Run `setup.sh`
 
+### Set fish as default/login shell
+
+After the bootstrap script has completed, you can run the following to set fish as your default/login shell (see: [fish docs](https://fishshell.com/docs/current/index.html#default-shell)):
+
+1. Add the shell to `/etc/shells` with:
+  ```bash
+  echo /opt/homebrew/bin/fish | sudo tee -a /etc/shells
+  ```
+2. Change your default shell with:
+  ```bash
+  chsh -s /opt/homebrew/bin/fish
+  ```
+
+
 ## Setup Modes
 
 There are two setup scripts to choose from:

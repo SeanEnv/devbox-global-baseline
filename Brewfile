@@ -8,19 +8,20 @@ brew "zoxide"
 brew "lf"
 brew "neovim"
 brew "git"
-brew "gh"                 # GitHub CLI
+brew "gh"               # GitHub CLI
 brew "bat"
-brew "eza"                # modern ls
+brew "eza"              # modern ls
 brew "jq"
 brew "yq"
 brew "htop"
-brew "fastfetch"          # modern neofetch alternative
+brew "fastfetch"        # modern neofetch alternative
 brew "direnv"
 brew "gum"
 brew "tree"
 brew "viu"
 brew "exiftool"
 brew "poppler"
+brew "oven-sh/bun/bun"
 
 # ---------- GUI apps / casks ----------
 cask "iterm2"
@@ -55,8 +56,8 @@ cask "quicklookase"
 cask "qlvideo"
 
 # ---------- VS Code Extensions ----------
-# (Installed only if VS Code is present)
 vscode "DaltonMenezes.aura-theme"
+vscode "akamud.vscode-theme-onedark"
 vscode "formulahendry.code-runner"
 vscode "tamasfe.even-better-toml"
 vscode "PKief.material-icon-theme"

@@ -77,6 +77,19 @@ if [ -d "$DOT/lf" ]; then
   chmod +x "$HOME/.config/lf/preview.sh" "$HOME/.config/lf/cleaner.sh" 2>/dev/null || true
 fi
 
+# Install fisher
+if not type -q fisher
+then
+    log "Installing fisher..."
+    curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
+fi
+
+# Install nvm.fish
+if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
+    log "Installing nvm.fish via fisher..."
+    fisher install jorgebucaran/nvm.fish
+fi
+
 # iTerm2 Dynamic Profiles
 ITERM_SRC="$DOT/iterm2/DynamicProfiles"
 PROFILE_FILE="iTerm2-Profiles.json"

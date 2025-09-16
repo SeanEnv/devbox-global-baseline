@@ -1,3 +1,10 @@
+########################################
+# lf configuration (macOS-friendly)
+# Notes:
+# - `set shell sh` makes lf run external commands with /bin/sh, not your login shell.
+########################################
+
+# Core
 set shell sh
 set scrolloff 5
 set hidden
@@ -5,76 +12,139 @@ set smartcase
 set wrapscan
 set drawbox
 set icons
-set number
-set previewer ~/.config/lf/preview.sh
-set cleaner  ~/.config/lf/cleaner.sh
+set previewer "~/.config/lf/preview.sh"
+set cleaner   "~/.config/lf/cleaner.sh"
 
-# Vim-style nav
-map j down
-map k up
-map h updir
-map l open
+########################################
+# Navigation (vim-style)
+########################################
+map j  down
+map k  up
+map h  updir
+map l  open             # If directory → cd into it; if file → open with $OPENER
 map gg top
 map G  bottom
-map H jump-prev
-map L jump-next
+map H  jump-prev
+map L  jump-next
 map gh toggledir
-map g~ cd ~
+map g~ cd ~             # Jump to home
 
-# File ops
+# Marks
+map mm mark             # Mark current item (you'll be prompted for a key)
+map `  goto             # Jump to a mark (press the mark key after)
+
+########################################
+# File operations
+########################################
 map dd cut
 map yy copy
 map pp paste
 map dD delete
-map D trash
-map u undo
-map U redo
-map r rename
-map mf :touch
-map md :mkdir
+map D  trash
+map u  undo
+map U  redo
+map r  rename
+map mf :touch           # Create a new file (lf internal)
+map md :mkdir           # Create a new directory (lf internal)
 
-# Marks
-map mm mark
-map '` goto
-
-# Searching
+########################################
+# Search
+########################################
 map / search
 map n searchnext
 map N searchprev
 
-# File opening (macOS)
-map E $EDITOR $f
-map o open $f
-map z qlmanage -p $f >/dev/null 2>&1
-map P sh -c 'command -v mpv >/dev/null && mpv "$f" || open "$f"'
+########################################
+# External helpers (macOS)
+# Use `cmd` + `%…` / `%{ … }` to run shell; `map` keys to `:cmd-name`
+########################################
 
-# Misc
+# Open current file in $EDITOR (fallback to TextEdit if $EDITOR is empty)
+cmd open-in-editor %{
+    if [ -n "$EDITOR" ]; then
+        "$EDITOR" "$f"
+    else
+        open -e "$f"
+    fi
+}
+map E :open-in-editor
+
+# Open with macOS default app / reveal in Finder, etc.
+cmd open-macos %open "$f"
+map o :open-macos
+
+# Quick Look (silent)
+cmd quicklook %qlmanage -p "$f" >/dev/null 2>&1
+map z :quicklook
+
+# Play media with mpv if available; otherwise use macOS open
+cmd play %{
+    if command -v mpv >/dev/null 2>&1; then
+        mpv "$f"
+    else
+        open "$f"
+    fi
+}
+map P :play
+
+########################################
+# “cd to highlighted” helpers
+########################################
+
+# Smart cd: if selection is a directory → cd into it,
+# otherwise cd to the files parent directory.
+cmd cd-smart %{
+    if [ -d "$f" ]; then
+        cd "$f"
+    else
+        cd "$(dirname "$f")"
+    fi
+}
+map C :cd-smart     # Press C (Shift+c) to jump
+
+# If you strictly want “cd $f” (will error on files), you could use:
+# map C cd $f
+
+########################################
+# Miscellaneous
+########################################
 map . togglehidden
 map a invert
 map s sortby name
 map S sortby time
 map t set drawbox!
 map q quit
+map Q quit          # Quit lf (the wrapper will cd to the last dir)
 
-# Git
-cmd git-add %git add "$f"
-cmd git-reset %git reset "$f"
+########################################
+# Git shortcuts (use `--` to protect paths that start with a dash)
+########################################
+cmd git-add    %git add -- "$f"
+cmd git-reset  %git reset -- "$f"
 cmd git-commit %git commit
-cmd git-diff %git diff "$f"
-cmd git-log %git log --oneline -- "$f"
+cmd git-diff   %git diff -- "$f"
+cmd git-log    %git log --oneline -- "$f"
 map ga :git-add
 map gr :git-reset
 map gc :git-commit
 map gd :git-diff
 map gl :git-log
 
-# FZF (select a file and highlight it in lf)
+########################################
+# FZF: pick a path and highlight it in the current lf instance
+########################################
 cmd fzf-select %{
-    f=$(fzf)
+    f="$(fzf)"
     [ -n "$f" ] && lf -remote "send $id select \"$f\""
 }
 map f :fzf-select
 
-# Archive extract (to .extract)
-cmd extract %mkdir -p "$f:h/.extract" && bsdtar -xf "$f" -C "$f:h/.extract"
+########################################
+# Archive extract (to .extract within the item’s directory)
+########################################
+cmd extract %{
+    d="$(dirname "$f")/.extract"
+    mkdir -p "$d"
+    bsdtar -xf "$f" -C "$d"
+}
 map xe :extract

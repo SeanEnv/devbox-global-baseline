@@ -1,13 +1,7 @@
-# Taps
-tap "homebrew/cask"
-
-# GUI apps / casks
+# ---------- GUI apps / casks ----------
 cask "iterm2"
 cask "visual-studio-code"
 cask "jetbrains-toolbox"
-
-# Security
-brew "1password"
 
 # Browsers
 cask "google-chrome"
@@ -18,7 +12,6 @@ cask "microsoft-edge"
 cask "karabiner-elements"
 cask "the-unarchiver"
 cask "alt-tab"
-cask "ice"
 
 # API/HTTP clients
 cask "postman"
@@ -32,14 +25,14 @@ cask "qlcolorcode"
 cask "qlstephen"
 cask "qlmarkdown"
 cask "quicklook-json"
-cask "qlimagesize"
 cask "suspicious-package"
 cask "apparency"
 cask "quicklookase"
 cask "qlvideo"
 
-# VS Code Extensions
+# ---------- VS Code Extensions ----------
 vscode "DaltonMenezes.aura-theme"
+vscode "akamud.vscode-theme-onedark"
 vscode "formulahendry.code-runner"
 vscode "tamasfe.even-better-toml"
 vscode "PKief.material-icon-theme"

@@ -32,11 +32,23 @@ link() {
 
 ensure_brew
 
-# install gum early
+# Install gum early
 if ! command -v gum >/dev/null 2>&1; then
   brew list gum >/dev/null 2>&1 || brew install gum || true
 fi
 command -v gum >/dev/null 2>&1 && _have_gum=1
+
+# Install fisher
+if ! command -v fisher >/dev/null 2>&1; then
+  say "Installing fisher..."
+  curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+fi
+
+# Install nvm.fish
+if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
+  say "Installing nvm.fish..."
+  curl -o "$HOME/.config/fish/functions/nvm.fish" https://raw.githubusercontent.com/jorgebucaran/nvm.fish/master/nvm.fish
+fi
 
 # helpers for brewfile installs
 _install_taps_from_file() {
