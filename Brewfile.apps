@@ -1,38 +1,13 @@
 # Taps
 tap "homebrew/cask"
 
-# ---------- CLI formulae ----------
-brew "fish"
-brew "starship"
-brew "ripgrep"
-brew "fd"
-brew "fzf"
-brew "zoxide"
-brew "lf"
-brew "neovim"
-brew "git"
-brew "gh"                 # GitHub CLI
-brew "bat"
-brew "eza"                # modern ls
-brew "jq"
-brew "yq"
-brew "htop"
-brew "fastfetch"          # modern neofetch alternative
-brew "direnv"
-brew "gum"
-brew "tree"
-brew "viu"
-brew "exiftool"
-brew "poppler"
-
-# ---------- GUI apps / casks ----------
+# GUI apps / casks
 cask "iterm2"
 cask "visual-studio-code"
 cask "jetbrains-toolbox"
 
 # Security
 brew "1password"
-brew "1password-cli"      # official 1Password CLI (formula)
 
 # Browsers
 cask "google-chrome"
@@ -43,7 +18,7 @@ cask "microsoft-edge"
 cask "karabiner-elements"
 cask "the-unarchiver"
 cask "alt-tab"
-cask "ice"                # Ice (menu bar manager)
+cask "ice"
 
 # API/HTTP clients
 cask "postman"
@@ -63,8 +38,7 @@ cask "apparency"
 cask "quicklookase"
 cask "qlvideo"
 
-# ---------- VS Code Extensions ----------
-# (Installed only if VS Code is present)
+# VS Code Extensions
 vscode "DaltonMenezes.aura-theme"
 vscode "formulahendry.code-runner"
 vscode "tamasfe.even-better-toml"

@@ -3,156 +3,99 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DOT="$ROOT/dotfiles"
-BREWFILE="$ROOT/Brewfile"
+BREWFILE="${BREWFILE:-$ROOT/Brewfile}"
 
-say()  { gum style --bold --foreground 212 "$*"; }
-warn() { gum style --foreground 214 "$*"; }
+log()  { printf "\033[1;36m%s\033[0m\n" "$*"; }
+warn() { printf "\033[0;33m%s\033[0m\n" "$*"; }
 
+ensure_brew() {
+  if ! command -v brew >/dev/null 2>&1; then
+    log "Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    eval "$(/opt/homebrew/bin/brew shellenv)" || true
+  fi
+}
+
+# Backup-aware symlink
 link() {
   local src="$1" dst="$2"
   mkdir -p "$(dirname "$dst")"
-  if [[ -L "$dst" || -f "$dst" ]]; then
+  if [ -L "$dst" ] || [ -f "$dst" ]; then
     if cmp -s "$src" "$dst" 2>/dev/null; then return 0; fi
     mv -f "$dst" "$dst.bak.$(date +%Y%m%d%H%M%S)"
   fi
   ln -sfn "$src" "$dst"
 }
 
-ensure_brew() {
-  if ! command -v brew >/dev/null 2>&1; then
-    say "Installing Homebrew..."
-    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    eval "$(/opt/homebrew/bin/brew shellenv)" 2>/dev/null || true
+ensure_brew
+
+[ -f "$BREWFILE" ] || { echo "Brewfile not found at $BREWFILE"; exit 1; }
+
+log "Installing packages via brew bundle..."
+brew bundle --file="$BREWFILE"
+
+log "Linking dotfiles (backups created with .bak.<timestamp> if needed)..."
+
+# fish
+if [ -d "$DOT/fish" ]; then
+  [ -f "$DOT/fish/config.fish" ] && link "$DOT/fish/config.fish" "$HOME/.config/fish/config.fish"
+
+  if [ -d "$DOT/fish/conf.d" ]; then
+    find "$DOT/fish/conf.d" -type f -name "*.fish" -print0 \
+      | while IFS= read -r -d '' f; do
+          link "$f" "$HOME/.config/fish/conf.d/$(basename "$f")"
+        done
   fi
-}
 
-brewfile_install_all() {
-  ensure_brew
-  brew bundle --file "$BREWFILE" --no-lock
-}
-
-brewfile_selective() {
-  ensure_brew
-  # parse Brewfile for items
-  mapfile -t casks < <(awk -F\" '/^cask /{print $2}' "$BREWFILE")
-  # multi-select UI
-  selection="$(printf "%s\n" "${casks[@]}" | gum choose --no-limit --header "Select apps to install")" || true
-  [[ -z "${selection:-}" ]] && return 0
-  while IFS= read -r item; do
-    [[ -z "$item" ]] && continue
-    brew install --cask "$item" || warn "Skipped $item"
-  done <<< "$selection"
-}
-
-reload_quicklook() {
-  if command -v qlmanage >/dev/null 2>&1; then
-    qlmanage -r >/dev/null 2>&1 || true
+  if [ -d "$DOT/fish/functions" ]; then
+    find "$DOT/fish/functions" -type f -name "*.fish" -print0 \
+      | while IFS= read -r -d '' f; do
+          link "$f" "$HOME/.config/fish/functions/$(basename "$f")"
+        done
   fi
-}
-
-# iTerm2 profiles & preferences
-ITERM_SRC_DIR="$DOT/iterm2"
-
-# Dynamic Profiles
-if [ -f "$ITERM_SRC_DIR/DynamicProfiles/devbox-profiles.json" ]; then
-  TARGET_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-  mkdir -p "$TARGET_DIR"
-  link "$ITERM_SRC_DIR/DynamicProfiles/devbox-profiles.json" \
-       "$TARGET_DIR/devbox-profiles.json"
-  say "iTerm2 dynamic profiles linked."
 fi
 
-# Nudge iTerm2 to pick up changes if it’s installed
-if brew list --cask iterm2 >/dev/null 2>&1; then
-  # Launch once so the profile/prefs get registered; safe if already running
-  open -g -a iTerm || true
+# fzf
+if [ -d "$DOT/fzf" ]; then
+  find "$DOT/fzf" -type f -print0 \
+    | while IFS= read -r -d '' f; do
+        link "$f" "$HOME/.config/fzf/$(basename "$f")"
+      done
 fi
 
-say "Linking dotfiles"
-# fish & fzf
-link "$DOT/fish/config.fish"                  "$HOME/.config/fish/config.fish"
-link "$DOT/fish/conf.d/00-devbox-global.fish" "$HOME/.config/fish/conf.d/00-devbox-global.fish"
-link "$DOT/fish/functions/ff.fish"            "$HOME/.config/fish/functions/ff.fish"
-link "$DOT/fish/functions/fcd.fish"           "$HOME/.config/fish/functions/fcd.fish"
-link "$DOT/fish/functions/fg.fish"            "$HOME/.config/fish/functions/fg.fish"
-link "$DOT/fzf/fzf.conf"                      "$HOME/.config/fzf/fzf.conf"
-link "$DOT/fzf/ctrl-t.conf"                   "$HOME/.config/fzf/ctrl-t.conf"
-link "$DOT/fzf/alt-c.conf"                    "$HOME/.config/fzf/alt-c.conf"
-link "$DOT/fzf/history.conf"                  "$HOME/.config/fzf/history.conf"
-link "$DOT/starship.toml"                     "$HOME/.config/starship.toml"
+# starship
+[ -f "$DOT/starship.toml" ] && link "$DOT/starship.toml" "$HOME/.config/starship.toml"
 
 # karabiner
-link "$DOT/karabiner/karabiner.json"          "$HOME/.config/karabiner/karabiner.json"
+[ -f "$DOT/karabiner/karabiner.json" ] && link "$DOT/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 
 # lf
-link "$DOT/lf/lfrc"                           "$HOME/.config/lf/lfrc"
-link "$DOT/lf/preview.sh"                     "$HOME/.config/lf/preview.sh"
-link "$DOT/lf/cleaner.sh"                     "$HOME/.config/lf/cleaner.sh"
-chmod +x "$HOME/.config/lf/preview.sh" "$HOME/.config/lf/cleaner.sh"
+if [ -d "$DOT/lf" ]; then
+  [ -f "$DOT/lf/lfrc" ] && link "$DOT/lf/lfrc" "$HOME/.config/lf/lfrc"
+  [ -f "$DOT/lf/preview.sh" ] && link "$DOT/lf/preview.sh" "$HOME/.config/lf/preview.sh"
+  [ -f "$DOT/lf/cleaner.sh" ] && link "$DOT/lf/cleaner.sh" "$HOME/.config/lf/cleaner.sh"
+  chmod +x "$HOME/.config/lf/preview.sh" "$HOME/.config/lf/cleaner.sh" 2>/dev/null || true
+fi
 
-say "Install GUI apps from Brewfile?"
-if gum confirm; then
-  ensure_brew
-  choice="$(printf "%s\n" "Install all (brew bundle)" "Select apps")"
-  pick="$(echo "$choice" | gum choose --header "Choose install mode")"
+# iTerm2 Dynamic Profiles
+ITERM_SRC="$DOT/iterm2/DynamicProfiles"
+PROFILE_FILE="iTerm2-Profiles.json"
 
-  if [[ "$pick" == "Install all (brew bundle)" ]]; then
-    brew bundle --file "$BREWFILE" --no-lock
-
-  else
-    # Parse casks from the Brewfile and let user choose
-    mapfile -t casks < <(awk -F\" '/^cask /{print $2}' "$BREWFILE")
-    selection="$(printf "%s\n" "${casks[@]}" | gum choose --no-limit --header "Select apps to install")" || true
-    if [[ -n "${selection:-}" ]]; then
-      while IFS= read -r item; do
-        [[ -z "$item" ]] && continue
-        brew install --cask "$item" || warn "Skipped $item"
-      done <<< "$selection"
-    fi
-
-    # If VS Code is installed, offer to install our curated extensions via brew bundle (vscode stanzas)
-    if brew list --cask visual-studio-code >/dev/null 2>&1; then
-      say "Install recommended VS Code extensions?"
-      if gum confirm; then
-        # Extract our vscode entries and feed them to `brew bundle` in-memory
-        vscode_lines="$(awk '/^vscode /{print}' "$BREWFILE")"
-        if [[ -n "$vscode_lines" ]]; then
-          # Ensure vscode cask is present first
-          brew list --cask visual-studio-code >/dev/null 2>&1 || brew install --cask visual-studio-code
-
-          # Build a tiny temp Brewfile with only the vscode entries
-          tmpbf="$(mktemp)"
-          printf 'tap "homebrew/cask"\n' > "$tmpbf"
-          printf '%s\n' "$vscode_lines" >> "$tmpbf"
-          brew bundle --file "$tmpbf" --no-lock || warn "Some VS Code extensions failed"
-          rm -f "$tmpbf"
-        fi
-      fi
-    else
-      warn "VS Code not installed; skipping curated extensions."
-    fi
-  fi
-
-  # Quick Look plugins take effect after a reload
-  if command -v qlmanage >/dev/null 2>&1; then qlmanage -r >/dev/null 2>&1 || true; fi
-
-  # Karabiner post-steps if installed
-  if brew list --cask karabiner-elements >/dev/null 2>&1; then
-    mkdir -p "$HOME/.config/karabiner"
-    link "$DOT/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
-    open -a "Karabiner-Elements" || true
-    say "Karabiner config installed. Approve accessibility/input monitoring when prompted."
+if [ -f "$ITERM_SRC/$PROFILE_FILE" ]; then
+  target_dir="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+  mkdir -p "$target_dir"
+  link "$ITERM_SRC/$PROFILE_FILE" "$target_dir/$PROFILE_FILE"
+  log "Linked iTerm2 profile: $PROFILE_FILE"
+  # If iTerm2 is installed, open once to load profiles
+  if brew list --cask iterm2 >/dev/null 2>&1; then
+    open -g -a iTerm || true
   fi
 fi
 
-say "Install NvChad for Neovim? See: https://nvchad.com/"
-if gum confirm; then
-  if [[ ! -d "$HOME/.config/nvim" ]]; then
-    git clone --depth=1 https://github.com/NvChad/starter "$HOME/.config/nvim"
-    say "NvChad installed to ~/.config/nvim"
-  else
-    warn "~/.config/nvim already exists; left unchanged."
-  fi
+# Quick Look reload & open Karabiner if installed
+command -v qlmanage >/dev/null 2>&1 && qlmanage -r >/dev/null 2>&1 || true
+if brew list --cask karabiner-elements >/dev/null 2>&1; then
+  open -a "Karabiner-Elements" || true
 fi
 
-say "Setup complete. Restart your terminal or run: exec fish"
+log "Setup complete. Start a new shell (or run: exec fish)."
