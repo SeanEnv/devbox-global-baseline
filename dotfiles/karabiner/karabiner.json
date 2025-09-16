@@ -9,6 +9,8 @@
     {
       "name": "Vim Navigation (Ctrl-hjkl)",
       "selected": true,
+      "virtual_hid_keyboard": { "keyboard_type_v2": "ansi" },
+      "simple_modifications": [],
       "complex_modifications": {
         "parameters": {
           "basic.simultaneous_threshold_milliseconds": 50,
@@ -52,10 +54,27 @@
               { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "down_arrow", "modifiers": ["option","shift"] }] },
               { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control","option","shift"] } }, "to": [{ "key_code": "up_arrow", "modifiers": ["option","shift"] }] }
             ]
+          },
+          {
+            "description": "Ctrl+Cmd+h/l → Line Home/End; Ctrl+Cmd+j/k → Document Top/Bottom",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control", "command"] } }, "to": [{ "key_code": "left_arrow", "modifiers": ["command"] }]},
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control", "command"] } }, "to":   [{ "key_code": "right_arrow", "modifiers": ["command"] }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control", "command"] } }, "to":   [{ "key_code": "down_arrow",  "modifiers": ["command"] }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control", "command"] } }, "to":   [{ "key_code": "up_arrow",    "modifiers": ["command"] }] }
+            ]
+          },
+          {
+            "description": "Ctrl+Cmd+Shift+h/l → Line Home/End Selection; Ctrl+Cmd+Shift+j/k → Document Top/Bottom Selection",
+            "manipulators": [
+              { "type": "basic", "from": { "key_code": "h", "modifiers": { "mandatory": ["control", "command", "shift"] } }, "to":   [{ "key_code": "left_arrow",  "modifiers": ["command", "shift"] }] },
+              { "type": "basic", "from": { "key_code": "l", "modifiers": { "mandatory": ["control", "command", "shift"] } }, "to":   [{ "key_code": "right_arrow", "modifiers": ["command", "shift"] }] },
+              { "type": "basic", "from": { "key_code": "j", "modifiers": { "mandatory": ["control", "command", "shift"] } }, "to":   [{ "key_code": "down_arrow",  "modifiers": ["command", "shift"] }] },
+              { "type": "basic", "from": { "key_code": "k", "modifiers": { "mandatory": ["control", "command", "shift"] } }, "to":   [{ "key_code": "up_arrow",    "modifiers": ["command", "shift"] }] }
+            ]
           }
         ]
-      },
-      "simple_modifications": []
+      }
     }
   ]
 }

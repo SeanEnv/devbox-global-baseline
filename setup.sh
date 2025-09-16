@@ -83,17 +83,17 @@ if ! command -v fisher >/dev/null 2>&1; then
     log "Installing fisher (via fish)..."
     # Run the fisher install inside fish (curl | source only works in fish)
     fish -c 'curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher' || warn "Failed to install fisher"
+    
+    # After fisher is installed, install nvm.fish
+    log "Installing nvm.fish..."
+    fish -c 'fisher install jorgebucaran/nvm.fish' || warn "Failed to install fish plugins"
   else
-    warn "fish not found; skipping fisher install"
+    warn "fish not found; skipping fisher and plugin installation"
   fi
-fi
-
-# Install nvm.fish via fisher (use fish to run fisher)
-if command -v fisher >/dev/null 2>&1; then
-  log "Installing nvm.fish (via fish/fisher)..."
-  fish -c 'fisher install jorgebucaran/nvm.fish' || warn "Failed to install nvm.fish"
 else
-  warn "fisher not available; skipping nvm.fish install"
+  # If fisher exists, just ensure plugins are installed
+  log "Installing/updating fish plugins..."
+  fish -c 'fisher install jorgebucaran/nvm.fish' || warn "Failed to install/update fish plugins"
 fi
 
 # iTerm2 Dynamic Profiles
@@ -106,9 +106,9 @@ if [ -f "$ITERM_SRC/$PROFILE_FILE" ]; then
   link "$ITERM_SRC/$PROFILE_FILE" "$target_dir/$PROFILE_FILE"
   log "Linked iTerm2 profile: $PROFILE_FILE"
   # If iTerm2 is installed, open once to load profiles
-  if brew list --cask iterm2 >/dev/null 2>&1; then
-    open -g -a iTerm || true
-  fi
+  # if brew list --cask iterm2 >/dev/null 2>&1; then
+  #   open -g -a iTerm || true
+  # fi
 fi
 
 # Quick Look reload & open Karabiner if installed
