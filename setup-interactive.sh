@@ -41,13 +41,13 @@ command -v gum >/dev/null 2>&1 && _have_gum=1
 # Install fisher
 if ! command -v fisher >/dev/null 2>&1; then
   say "Installing fisher..."
-  curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+  curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fi
 
 # Install nvm.fish
 if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
   say "Installing nvm.fish..."
-  curl -o "$HOME/.config/fish/functions/nvm.fish" https://raw.githubusercontent.com/jorgebucaran/nvm.fish/master/nvm.fish
+  fisher install jorgebucaran/nvm.fish
 fi
 
 # helpers for brewfile installs

@@ -78,15 +78,14 @@ if [ -d "$DOT/lf" ]; then
 fi
 
 # Install fisher
-if not type -q fisher
-then
+if ! command -v fisher >/dev/null 2>&1; then
     log "Installing fisher..."
     curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher
 fi
 
 # Install nvm.fish
 if [ ! -d "$HOME/.config/fish/functions/nvm.fish" ]; then
-    log "Installing nvm.fish via fisher..."
+    log "Installing nvm.fish..."
     fisher install jorgebucaran/nvm.fish
 fi
 
